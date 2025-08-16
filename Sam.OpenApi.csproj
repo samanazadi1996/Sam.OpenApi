@@ -82,7 +82,7 @@
   <ItemGroup>
     <Compile Include="Angular\AngularSourceBuilder.cs" />
     <Compile Include="Helpers\Logger.cs" />
-    <Compile Include="Helpers\ModelBuilde.cs" />
+    <Compile Include="Helpers\ModelBuilder.cs" />
     <Compile Include="Helpers\StringHelper.cs" />
     <Compile Include="Helpers\TemplateReader.cs" />
     <Compile Include="Models\OpenApiDocument.cs" />

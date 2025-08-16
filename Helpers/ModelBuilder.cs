@@ -7,18 +7,20 @@ using System.Threading.Tasks;
 
 namespace Sam.OpenApi.Helpers
 {
-    internal class ModelBuilde
+    internal class ModelBuilder
     {
         public static string BuildFromUrl(string url)
         {
             try
             {
                 var client = new HttpClient();
+                client.Timeout = TimeSpan.FromSeconds(30);
+
                 var response = client.GetAsync(url).Result;
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Console.WriteLine($"[ERROR] Request failed. Status Code: {(int)response.StatusCode} - {response.ReasonPhrase}");
+                    Logger.LogError($"[ERROR] Request failed. Status Code: {(int)response.StatusCode} - {response.ReasonPhrase}");
                     return null;
                 }
 
@@ -26,7 +28,7 @@ namespace Sam.OpenApi.Helpers
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
-                    Console.WriteLine("[ERROR] Response content is empty.");
+                    Logger.LogError("[ERROR] Response content is empty.");
                     return null;
                 }
 
@@ -34,20 +36,20 @@ namespace Sam.OpenApi.Helpers
             }
             catch (HttpRequestException ex)
             {
-                Console.WriteLine($"[ERROR] HTTP request error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
+                Logger.LogError($"[ERROR] HTTP request error: {ex.Message}");
+                Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (TaskCanceledException ex)
             {
-                Console.WriteLine($"[ERROR] Request timed out: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
+                Logger.LogError($"[ERROR] Request timed out: {ex.Message}");
+                Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] Unexpected error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
+                Logger.LogError($"[ERROR] Unexpected error: {ex.Message}");
+                Logger.LogError(ex.StackTrace);
                 return null;
             }
         }
@@ -58,13 +60,13 @@ namespace Sam.OpenApi.Helpers
             {
                 if (string.IsNullOrWhiteSpace(filePath))
                 {
-                    Console.WriteLine("[ERROR] File path is null or empty.");
+                    Logger.LogError("[ERROR] File path is null or empty.");
                     return null;
                 }
 
                 if (!File.Exists(filePath))
                 {
-                    Console.WriteLine($"[ERROR] File not found: {filePath}");
+                    Logger.LogError($"[ERROR] File not found: {filePath}");
                     return null;
                 }
 
@@ -72,7 +74,7 @@ namespace Sam.OpenApi.Helpers
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
-                    Console.WriteLine($"[ERROR] File is empty: {filePath}");
+                    Logger.LogError($"[ERROR] File is empty: {filePath}");
                     return null;
                 }
 
@@ -80,20 +82,20 @@ namespace Sam.OpenApi.Helpers
             }
             catch (IOException ex)
             {
-                Console.WriteLine($"[ERROR] File read error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
+                Logger.LogError($"[ERROR] File read error: {ex.Message}");
+                Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (UnauthorizedAccessException ex)
             {
-                Console.WriteLine($"[ERROR] Access denied to file: {filePath}");
-                Console.WriteLine(ex.StackTrace);
+                Logger.LogError($"[ERROR] Access denied to file: {filePath}");
+                Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (Exception ex)
             {
-                Console.WriteLine($"[ERROR] Unexpected error: {ex.Message}");
-                Console.WriteLine(ex.StackTrace);
+                Logger.LogError($"[ERROR] Unexpected error: {ex.Message}");
+                Logger.LogError(ex.StackTrace);
                 return null;
             }
         }

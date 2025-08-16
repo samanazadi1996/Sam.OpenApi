@@ -28,17 +28,19 @@ namespace Sam.OpenApi
 
             if (Uri.IsWellFormedUriString(secondArg, UriKind.Absolute))
             {
-                rootobject = ModelBuilde.BuildFromUrl(secondArg);
+                rootobject = ModelBuilder.BuildFromUrl(secondArg);
             }
             else if (System.IO.File.Exists(secondArg))
             {
-                rootobject = ModelBuilde.BuildFromFile(secondArg);
+                rootobject = ModelBuilder.BuildFromFile(secondArg);
             }
             else
             {
                 Logger.LogError("[ERROR] The second argument must be either a valid URL or an existing file path.");
                 return;
             }
+            if (rootobject is null)
+                return;
 
             // Debug output
             Logger.LogInfo("Type: " + type);
