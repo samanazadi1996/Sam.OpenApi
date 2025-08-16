@@ -1,0 +1,4 @@
+﻿
+    FunctionName(params: any) {
+        return this.http.delete(`EndpointUrl`, params);
+    }
