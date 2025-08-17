@@ -1,11 +1,10 @@
-﻿using Sam.OpenApi.Angular;
-using Sam.OpenApi.Helpers;
-using Sam.OpenApi.Models;
+﻿using OpenApi.Angular;
+using OpenApi.Helpers;
 using System;
 
-namespace Sam.OpenApi
+namespace OpenApi
 {
-    internal static class Program
+    class Program
     {
         static void Main(string[] args)
         {
@@ -14,9 +13,9 @@ namespace Sam.OpenApi
 
             if (args.Length < 3)
             {
-                Logger.LogInfo("Usage: Sam.OpenApi <type> (<url> | <file>) <outputPath>");
-                Logger.LogInfo("Example (URL):  Sam.OpenApi angular \"https://example.com/api.json\" \"C:\\output\"");
-                Logger.LogInfo("Example (File): Sam.OpenApi angular \"C:\\api.json\" \"C:\\output\"");
+                Logger.LogInfo("Usage: OpenApi <type> (<url> | <file>) <outputPath>");
+                Logger.LogInfo("Example (URL):  OpenApi angular \"https://example.com/api.json\" \"C:\\output\"");
+                Logger.LogInfo("Example (File): OpenApi angular \"C:\\api.json\" \"C:\\output\"");
                 return;
             }
 
@@ -52,5 +51,6 @@ namespace Sam.OpenApi
                 AngularSourceBuilder.Generate(rootobject, outputPath);
             }
         }
+
     }
 }

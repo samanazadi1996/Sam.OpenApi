@@ -1,11 +1,9 @@
-﻿using Sam.OpenApi.Models;
-using System;
+﻿using System;
 using System.IO;
 using System.Net.Http;
-using System.Text.Json;
 using System.Threading.Tasks;
 
-namespace Sam.OpenApi.Helpers
+namespace OpenApi.Helpers
 {
     internal class ModelBuilder
     {

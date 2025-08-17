@@ -1,11 +1,11 @@
-﻿using Sam.OpenApi.Helpers;
+﻿using OpenApi.Helpers;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
 using System.Text.Json;
 
-namespace Sam.OpenApi.Angular
+namespace OpenApi.Angular
 {
     internal class AngularSourceBuilder
     {

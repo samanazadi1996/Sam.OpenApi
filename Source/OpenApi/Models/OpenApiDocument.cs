@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Sam.OpenApi.Models
+namespace OpenApi.Models
 {
     public sealed class OpenApiDocument
     {

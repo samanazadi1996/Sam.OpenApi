@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Sam.OpenApi.Helpers
+namespace OpenApi.Helpers
 {
     public static class Logger
     {
