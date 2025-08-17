@@ -49,6 +49,7 @@ namespace OpenApi
             if (type.Trim().Equals("angular", StringComparison.OrdinalIgnoreCase))
             {
                 AngularSourceBuilder.Generate(rootobject, outputPath);
+                AngularSourceBuilder.GenerateInterfaces(rootobject, outputPath);
             }
         }
 

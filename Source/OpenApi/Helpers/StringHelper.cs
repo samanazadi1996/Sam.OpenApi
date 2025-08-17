@@ -1,4 +1,5 @@
 ﻿using System.Linq;
+using System.Text.RegularExpressions;
 
 namespace OpenApi.Helpers
 {
@@ -17,7 +18,19 @@ namespace OpenApi.Helpers
 
         public static string ToKebabCase(this string str)
         {
-            return string.Join("-", str.Split(' ', '_')).ToLower();
+            if (string.IsNullOrWhiteSpace(str))
+                return string.Empty;
+
+            // جایگزینی فاصله و _
+            str = str.Replace(" ", "-").Replace("_", "-");
+
+            // جدا کردن حروف PascalCase / camelCase
+            str = Regex.Replace(str, "([a-z0-9])([A-Z])", "$1-$2");
+
+            // چندتا - پشت سر هم → یکی
+            str = Regex.Replace(str, "-{2,}", "-");
+
+            return str.ToLower();
         }
 
     }
