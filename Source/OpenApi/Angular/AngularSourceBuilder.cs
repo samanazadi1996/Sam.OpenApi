@@ -114,8 +114,10 @@ namespace OpenApi.Angular
 
                 var content = TemplateReader.Angular.Any("interface")
                     .Replace("InterfaceName", interfaceName + "Interface")
-                    .Replace("Properties", string.Join(Environment.NewLine, lines));
-
+                    .Replace("Properties", string.Join(Environment.NewLine, lines))
+                    .Replace("Imports", string.Join(Environment.NewLine, Imports))
+                                        ;
+                Imports.Clear();
 
                 string fileName = interfaceName.ToKebabCase() + "-interface.ts";
                 string filePath = Path.Combine(targetDir, fileName);
@@ -124,7 +126,7 @@ namespace OpenApi.Angular
                 Logger.LogSuccess($"Interface Generated: {filePath}");
             }
         }
-
+        public static List<string> Imports { get; set; } = new List<string>();
         private static (string typeName, bool nullable) MapType(JsonElement element)
         {
             if (element.TryGetProperty("type", out var type))
@@ -147,12 +149,22 @@ namespace OpenApi.Angular
                         if (element.TryGetProperty("items", out var items))
                         {
                             var self = MapType(items);
+
                             return ($"{self.typeName}[]", self.nullable);
                         }
                         return ("any[]", nullable);
                     case "object": return ("any", nullable);
                 }
             }
+            if (element.TryGetProperty("$ref", out var typeasd))
+            {
+                string interfaceName = CleanName(typeasd.ToString()) + "Interface";
+
+                Imports.Add($"import {{ {interfaceName} }} from './{interfaceName.ToKebabCase()}';");
+
+                return (interfaceName, true);
+            }
+            
             return ("any", true);
         }
 
