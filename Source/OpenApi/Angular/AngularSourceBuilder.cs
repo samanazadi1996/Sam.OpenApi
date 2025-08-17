@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.SqlTypes;
 using System.IO;
+using System.Linq;
 using System.Text;
 using System.Text.Json;
+using System.Xml.Linq;
 
 namespace OpenApi.Angular
 {
@@ -107,66 +109,85 @@ namespace OpenApi.Angular
                 {
                     foreach (var prop in props.EnumerateObject())
                     {
-                        var mapType = MapType(prop.Value);
-                        lines.Add($"  {prop.Name + (mapType.nullable ? "?" : "")}: {mapType.typeName};");
+
+                        lines.Add($"  {prop.Name + CheckNullable(prop.Value)}: {GenerateModel(prop.Value)};");
                     }
                 }
 
                 var content = TemplateReader.Angular.Any("interface")
-                    .Replace("InterfaceName", interfaceName + "Interface")
+                    .Replace("InterfaceName", interfaceName)
                     .Replace("Properties", string.Join(Environment.NewLine, lines))
                     .Replace("Imports", string.Join(Environment.NewLine, Imports))
                                         ;
                 Imports.Clear();
 
-                string fileName = interfaceName.ToKebabCase() + "-interface.ts";
+                string fileName = interfaceName.ToKebabCase() + ".ts";
                 string filePath = Path.Combine(targetDir, fileName);
 
                 File.WriteAllText(filePath, content);
                 Logger.LogSuccess($"Interface Generated: {filePath}");
             }
         }
-        public static List<string> Imports { get; set; } = new List<string>();
-        private static (string typeName, bool nullable) MapType(JsonElement element)
+        static string GenerateModel(JsonElement value)
         {
-            if (element.TryGetProperty("type", out var type))
+            if (value.TryGetProperty("$ref", out var tmp))
             {
-                var nullable = false;
+                var www = RefToNameName(tmp.ToString());
+                Imports.Add("import {" + www + "} from './" + www.ToKebabCase() + "';");
 
-                if (element.TryGetProperty("nullable", out var tmp))
-                    if (bool.TryParse(tmp.ToString().ToLower(), out bool bullableBool))
-                    {
-                        nullable = bullableBool;
-                    }
-
-                switch (type.GetString())
-                {
-                    case "string": return ("string", nullable);
-                    case "integer":
-                    case "number": return ("number", nullable);
-                    case "boolean": return ("boolean", nullable);
-                    case "array":
-                        if (element.TryGetProperty("items", out var items))
-                        {
-                            var self = MapType(items);
-
-                            return ($"{self.typeName}[]", self.nullable);
-                        }
-                        return ("any[]", nullable);
-                    case "object": return ("any", nullable);
-                }
+                return www;
             }
-            if (element.TryGetProperty("$ref", out var typeasd))
+            if (value.TryGetProperty("type", out var tmp2) && tmp2.ToString() == "object")
             {
-                string interfaceName = CleanName(typeasd.ToString()) + "Interface";
-
-                Imports.Add($"import {{ {interfaceName} }} from './{interfaceName.ToKebabCase()}';");
-
-                return (interfaceName, true);
+                return "any";
             }
-            
-            return ("any", true);
+            if (value.TryGetProperty("type", out var tmp3) && tmp3.ToString() == "array")
+            {
+                if (value.TryGetProperty("items", out var tmp5))
+                    return GenerateModel(tmp5) + "[]";
+
+                return "any[]";
+            }
+            if (value.TryGetProperty("type", out var tmp4))
+            {
+                return GeneratePrimitiveSample(tmp4.ToString());
+            }
+
+            return "any";
+
+
         }
+
+        private static string RefToNameName(string v)
+        {
+            return CleanName(v).Split('/').LastOrDefault();
+        }
+
+        static string GeneratePrimitiveSample(string type)
+        {
+            switch (type)
+            {
+                case "string": return "string";
+                case "integer":
+                case "number": return "number";
+                case "boolean": return "boolean";
+
+                default: return "any";
+            }
+        }
+
+        static string CheckNullable(JsonElement value)
+        {
+            var nullable = false;
+
+            if (value.TryGetProperty("nullable", out var tmp))
+                if (bool.TryParse(tmp.ToString().ToLower(), out bool bullableBool))
+                    nullable = bullableBool;
+
+            return nullable ? "?" : "";
+        }
+
+        public static List<string> Imports { get; set; } = new List<string>();
 
         private static string CleanName(string name)
         {
@@ -192,7 +213,7 @@ namespace OpenApi.Angular
                 name = parts[parts.Length - 1];
             }
 
-            return name;
+            return name + "Interface";
         }
 
     }
