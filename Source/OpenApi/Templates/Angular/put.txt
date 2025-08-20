@@ -1,4 +1,4 @@
 ﻿
-    FunctionName(body: any) {
-        return this.http.post(`EndpointUrl`, body);
+    FunctionName(TRequest) {
+        return this.http.post<TResponse>(`EndpointUrl`, BodyModel);
     }

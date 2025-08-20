@@ -1,5 +1,5 @@
-﻿using OpenApi.Angular;
-using OpenApi.Helpers;
+﻿using OpenApi.Helpers;
+using OpenApi.SourceBuilders;
 using System;
 
 namespace OpenApi
@@ -9,7 +9,7 @@ namespace OpenApi
         static void Main(string[] args)
         {
             // for test
-            args = new string[] { "angular", "https://clean-architecture.koyeb.app/swagger/v1/swagger.json", "C:\\output" };
+            args = new string[] { "angular", "C:\\Users\\Saman\\Desktop\\New folder (2)\\New folder\\1.json", "C:\\Users\\Saman\\Desktop\\New folder (2)\\New folder\\output" };
 
             if (args.Length < 3)
             {
@@ -48,8 +48,7 @@ namespace OpenApi
 
             if (type.Trim().Equals("angular", StringComparison.OrdinalIgnoreCase))
             {
-                AngularSourceBuilder.Generate(rootobject, outputPath);
-                AngularSourceBuilder.GenerateInterfaces(rootobject, outputPath);
+                AngularSourceBuilder.Build(rootobject, outputPath);
             }
         }
 

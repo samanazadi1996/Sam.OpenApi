@@ -1,4 +1,4 @@
 ﻿
-    FunctionName(params: any) {
-        return this.http.get(`EndpointUrl`, params);
+    FunctionName(TRequest) {
+        return this.http.get<TResponse>(`EndpointUrl`);
     }
