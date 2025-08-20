@@ -3,7 +3,6 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using System.Security.Cryptography;
 using System.Text;
 using System.Text.Json;
 
@@ -68,20 +67,21 @@ namespace OpenApi.SourceBuilders
 
                     GetParameters(operation, out string querySrting, out string parameters);
 
-                    var getBody = GetBody(operation);
-                    var getTResponse = GetTResponse(operation);
+                    GetBody(operation, out string bodyType);
+
+                    GetTResponse(operation, out string tResponse);
 
                     var bodyModel = "body";
 
-                    if (!string.IsNullOrEmpty(getBody))
+                    if (!string.IsNullOrEmpty(bodyType))
                     {
-                        imports.Add("import { " + getBody + " } from './interfaces/" + getBody.ToKebabCase() + "';");
+                        imports.Add("import { " + bodyType + " } from './interfaces/" + bodyType.ToKebabCase() + "';");
 
                         var tmp = (parameters + "").Split(',')
-                            .Where(p=>!string.IsNullOrWhiteSpace(p))
+                            .Where(p => !string.IsNullOrWhiteSpace(p))
                             .ToList();
 
-                        tmp.Add($"body : {getBody}");
+                        tmp.Add($"body : {bodyType}");
 
                         parameters = string.Join(" ,", tmp);
                     }
@@ -90,17 +90,17 @@ namespace OpenApi.SourceBuilders
                         bodyModel = "{ }";
                     }
 
-                    if (!string.IsNullOrEmpty(getTResponse))
+                    if (!string.IsNullOrEmpty(tResponse))
                     {
-                        imports.Add("import { " + getTResponse + " } from './interfaces/" + getTResponse.ToKebabCase() + "';");
-                        getTResponse = $"<{getTResponse}>";
+                        imports.Add("import { " + tResponse + " } from './interfaces/" + tResponse.ToKebabCase() + "';");
+                        tResponse = $"<{tResponse}>";
                     }
 
                     sb.Append(
                     func.Replace("FunctionName", funcName)
                         .Replace("EndpointUrl", path + querySrting)
                         .Replace("TRequest", parameters)
-                        .Replace("<TResponse>", getTResponse)
+                        .Replace("<TResponse>", tResponse)
                         .Replace("BodyModel", bodyModel)
                         );
 
@@ -124,38 +124,22 @@ namespace OpenApi.SourceBuilders
             }
         }
 
-        private static string GetTResponse(JsonElement operation)
+        private static void GetTResponse(JsonElement operation, out string tResponse)
         {
+            tResponse = null;
             try
             {
-                if (operation.TryGetProperty("responses", out var responses) &&
-                    responses.TryGetProperty("200", out var ok) &&
-                    ok.TryGetProperty("content", out var content) &&
-                    content.TryGetProperty("application/json", out var applicationJson) &&
-                    applicationJson.TryGetProperty("schema", out var schema) &&
-                    schema.TryGetProperty("$ref", out var @ref)
-                                        )
-
-                {
-                    return RefToName(@ref.ToString());
-                }
-
-
-
-
-                //if (responses.TryGetProperty(responses.get, out var eee))
-                //{
-
-                //}
-
+                if (operation.TryGetProperty("responses", out var responses))
+                    if (responses.TryGetProperty("200", out var ok))
+                        if (ok.TryGetProperty("content", out var content))
+                            if (content.TryGetProperty("application/json", out var applicationJson))
+                                if (applicationJson.TryGetProperty("schema", out var schema))
+                                    if (schema.TryGetProperty("$ref", out var @ref))
+                                        tResponse = RefToName(@ref.ToString());
             }
-            catch (Exception)
+            catch
             {
-
             }
-
-
-            return "";
         }
 
         private static void GetParameters(JsonElement operation, out string queryString, out string parameters)
@@ -169,23 +153,11 @@ namespace OpenApi.SourceBuilders
                 if (operation.TryGetProperty("parameters", out var temp))
                 {
                     foreach (var item in temp.EnumerateArray())
-                    {
                         if (item.TryGetProperty("in", out var type))
-                        {
-
                             if (type.ToString() == "query" && item.TryGetProperty("name", out var paramName))
-                            {
                                 if (item.TryGetProperty("schema", out var paramSchema))
-                                {
                                     if (paramSchema.TryGetProperty("type", out var paramType))
-                                    {
                                         props.Add((paramName.ToString(), GeneratePrimitiveSample(paramType.ToString())));
-                                    }
-                                }
-
-                            }
-                        }
-                    }
                 }
                 if (props.Any())
                 {
@@ -199,24 +171,22 @@ namespace OpenApi.SourceBuilders
             }
         }
 
-        private static string GetBody(JsonElement operation)
+        private static void GetBody(JsonElement operation, out string bodyType)
         {
+            bodyType = null;
             try
             {
                 if (operation.TryGetProperty("requestBody", out var requestBody))
                     if (requestBody.TryGetProperty("content", out var content))
                         if (content.TryGetProperty("application/json", out var applicationJson))
                             if (applicationJson.TryGetProperty("schema", out var schema))
-                                if (schema.TryGetProperty("$ref", out var refVal))
-                                    return RefToName(refVal.ToString());
-
-                return null;
+                                if (schema.TryGetProperty("$ref", out var @ref))
+                                    bodyType = RefToName(@ref.ToString());
             }
             catch
             {
             }
 
-            return null;
         }
 
         public static void GenerateInterfaces(string outputPath)
