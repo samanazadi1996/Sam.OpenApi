@@ -92,7 +92,12 @@ namespace OpenApi.SourceBuilders
 
                     if (!string.IsNullOrEmpty(tResponse))
                     {
-                        imports.Add("import { " + tResponse + " } from './interfaces/" + tResponse.ToKebabCase() + "';");
+                        imports.Add(
+                            TemplateReader.Angular.Any("import")
+                            .Replace("ClassName", tResponse)
+                            .Replace("FileName", "interfaces/" + tResponse.ToKebabCase())
+                            );
+
                         tResponse = $"<{tResponse}>";
                     }
 
@@ -236,10 +241,14 @@ namespace OpenApi.SourceBuilders
             {
                 if (value.TryGetProperty("$ref", out var tmp))
                 {
-                    var www = RefToName(tmp.ToString());
-                    Imports.Add("import { " + www + " } from './" + www.ToKebabCase() + "';");
+                    var className = RefToName(tmp.ToString());
+                    Imports.Add(
+                        TemplateReader.Angular.Any("import")
+                        .Replace("ClassName", className)
+                        .Replace("FileName", className.ToKebabCase())
+                        );
 
-                    return www;
+                    return className;
                 }
                 if (value.TryGetProperty("type", out var tmp2) && tmp2.ToString() == "object")
                 {

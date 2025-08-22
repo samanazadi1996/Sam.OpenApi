@@ -9,7 +9,7 @@ namespace OpenApi
         static void Main(string[] args)
         {
             #if DEBUG
-            args = new string[] { "angular", "C:\\OpenApi\\open-api.json", "C:\\OpenApi\\output" };
+            args = new string[] { "angular", SampleHelper.GetSampleOpenApiJson(), SampleHelper.GetSampleOutput() };
             Logger.LogInfo("DEBUG Mode");
             #endif
 

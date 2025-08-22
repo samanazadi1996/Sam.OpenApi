@@ -74,6 +74,7 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Helpers\SampleHelper.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -85,6 +86,9 @@
     <Compile Include="Helpers\TemplateReader.cs" />
     <Compile Include="Models\OpenApiDocument.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Content Include="Templates\Angular\import.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\Angular\put.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
