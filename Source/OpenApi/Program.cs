@@ -8,8 +8,10 @@ namespace OpenApi
     {
         static void Main(string[] args)
         {
-            // for test
-            args = new string[] { "angular", "C:\\Users\\Saman\\Desktop\\New folder (2)\\New folder\\1.json", "C:\\Users\\Saman\\Desktop\\New folder (2)\\New folder\\output" };
+            #if DEBUG
+            args = new string[] { "angular", "C:\\OpenApi\\open-api.json", "C:\\OpenApi\\output" };
+            Logger.LogInfo("DEBUG Mode");
+            #endif
 
             if (args.Length < 3)
             {

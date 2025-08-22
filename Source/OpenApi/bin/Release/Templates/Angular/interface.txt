@@ -1,0 +1,7 @@
+﻿Imports
+
+export interface InterfaceName {
+
+Properties
+
+}
