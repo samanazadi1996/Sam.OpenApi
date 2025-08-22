@@ -1,4 +1,5 @@
 ﻿using OpenApi.Helpers;
+using OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -11,10 +12,11 @@ namespace OpenApi.SourceBuilders
     internal class AngularSourceBuilder
     {
         public static JsonElement root;
+        public static AngularSettingsDto settings;
         public static void Build(string openApiDocument, string outputPath)
         {
-            var doc = JsonDocument.Parse(openApiDocument);
-            root = doc.RootElement;
+            root = JsonDocument.Parse(openApiDocument).RootElement;
+            settings = AngularSettingsDto.Build();
 
             GenerateServices(outputPath);
             GenerateInterfaces(outputPath);
@@ -75,7 +77,7 @@ namespace OpenApi.SourceBuilders
 
                     if (!string.IsNullOrEmpty(bodyType))
                     {
-                        imports.Add("import { " + bodyType + " } from './interfaces/" + bodyType.ToKebabCase() + "';");
+                        imports.Add("import { " + bodyType + " } from './" + settings.InterfacesPath + "/" + bodyType.ToKebabCase() + "';");
 
                         var tmp = (parameters + "").Split(',')
                             .Where(p => !string.IsNullOrWhiteSpace(p))
@@ -95,7 +97,7 @@ namespace OpenApi.SourceBuilders
                         imports.Add(
                             TemplateReader.Angular.Any("import")
                             .Replace("ClassName", tResponse)
-                            .Replace("FileName", "interfaces/" + tResponse.ToKebabCase())
+                            .Replace("FileName", settings.InterfacesPath + "/" + tResponse.ToKebabCase())
                             );
 
                         tResponse = $"<{tResponse}>";
@@ -196,7 +198,7 @@ namespace OpenApi.SourceBuilders
 
         public static void GenerateInterfaces(string outputPath)
         {
-            var targetDir = Path.Combine(outputPath, "interfaces");
+            var targetDir = Path.Combine(outputPath, settings.InterfacesPath);
             Directory.CreateDirectory(targetDir);
 
             if (!root.TryGetProperty("components", out var components) ||

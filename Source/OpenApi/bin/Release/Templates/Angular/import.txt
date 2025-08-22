@@ -1,1 +1,1 @@
-﻿import { ClassName } from './FileName';"
+﻿import { ClassName } from './FileName';
