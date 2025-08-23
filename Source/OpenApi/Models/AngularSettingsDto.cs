@@ -6,6 +6,7 @@ namespace OpenApi.Models
     public class AngularSettingsDto
     {
         public string InterfacesPath { get; set; }
+        public string FunctionNameConvention { get; set; }
 
         public static AngularSettingsDto Build()
         {

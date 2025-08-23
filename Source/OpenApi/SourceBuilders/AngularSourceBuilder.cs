@@ -77,7 +77,11 @@ namespace OpenApi.SourceBuilders
 
                     if (!string.IsNullOrEmpty(bodyType))
                     {
-                        imports.Add("import { " + bodyType + " } from './" + settings.InterfacesPath + "/" + bodyType.ToKebabCase() + "';");
+                        imports.Add(
+                            TemplateReader.Angular.Any("import")
+                            .Replace("ClassName", bodyType)
+                            .Replace("FileName", settings.InterfacesPath + "/" + bodyType.ToKebabCase())
+                            );
 
                         var tmp = (parameters + "").Split(',')
                             .Where(p => !string.IsNullOrWhiteSpace(p))
@@ -127,7 +131,7 @@ namespace OpenApi.SourceBuilders
             string GenerateFunctionName(string method, string path)
             {
                 var cleanPath = path.Replace("/", "_").Replace("{", "").Replace("}", "");
-                return $"{method.ToLower()}{cleanPath}";
+                return $"{method.ToLower()}{cleanPath}".ConvertCase(settings.FunctionNameConvention);
             }
         }
 

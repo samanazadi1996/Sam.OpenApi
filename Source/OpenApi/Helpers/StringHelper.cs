@@ -21,16 +21,46 @@ namespace OpenApi.Helpers
             if (string.IsNullOrWhiteSpace(str))
                 return string.Empty;
 
-            // جایگزینی فاصله و _
             str = str.Replace(" ", "-").Replace("_", "-");
 
-            // جدا کردن حروف PascalCase / camelCase
             str = Regex.Replace(str, "([a-z0-9])([A-Z])", "$1-$2");
 
-            // چندتا - پشت سر هم → یکی
             str = Regex.Replace(str, "-{2,}", "-");
 
             return str.ToLower();
+        }
+        public static string ToSnakeCase(this string str)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return string.Empty;
+
+            str = str.Replace(" ", "_").Replace("-", "_");
+
+            str = Regex.Replace(str, "([a-z0-9])([A-Z])", "$1_$2");
+
+            str = Regex.Replace(str, "_{2,}", "_");
+
+            return str.ToLower();
+        }
+
+        public static string ConvertCase(this string str, string caseType)
+        {
+            if (string.IsNullOrWhiteSpace(str))
+                return string.Empty;
+
+            switch (caseType?.ToLowerInvariant())
+            {
+                case "pascal":
+                    return str.ToPascalCase();
+                case "kebab":
+                    return str.ToKebabCase();
+                case "snake":
+                    return str.ToSnakeCase();
+                case "camel":
+                    return str.ToCamelCase();
+                default:
+                    return str;
+            }
         }
 
     }
