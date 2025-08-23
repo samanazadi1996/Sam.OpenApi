@@ -8,10 +8,10 @@ namespace OpenApi
     {
         static void Main(string[] args)
         {
-            #if DEBUG
+#if DEBUG
             args = new string[] { "angular", SampleHelper.GetSampleOpenApiJson(), SampleHelper.GetSampleOutput() };
             Logger.LogInfo("DEBUG Mode");
-            #endif
+#endif
 
             if (args.Length < 3)
             {
@@ -41,7 +41,10 @@ namespace OpenApi
                 return;
             }
             if (rootobject is null)
+            {
+                Logger.LogError("[ERROR] Failed to parse OpenAPI specification. The input may be invalid or empty.");
                 return;
+            }
 
             // Debug output
             Logger.LogInfo("Type: " + type);
