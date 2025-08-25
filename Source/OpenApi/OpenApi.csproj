@@ -93,6 +93,9 @@
     <Content Include="Templates\Angular\import.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
+    <Content Include="Templates\Angular\options.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </Content>
     <Content Include="Templates\Angular\put.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>

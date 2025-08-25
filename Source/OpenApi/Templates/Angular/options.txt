@@ -1,0 +1,4 @@
+﻿
+    FunctionName(TRequest) {
+        return this.http.request<TResponse>('OPTIONS', `EndpointUrl`);
+    }
