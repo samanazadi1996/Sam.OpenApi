@@ -8,5 +8,4 @@ export class ServiceNameService {
     constructor(private http: HttpClient) { }
 
 Functions
-
 }

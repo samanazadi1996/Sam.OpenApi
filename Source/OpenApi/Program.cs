@@ -9,7 +9,7 @@ namespace OpenApi
         static void Main(string[] args)
         {
 #if DEBUG
-            args = new string[] { "angular", SampleHelper.GetSampleOpenApiJson(), SampleHelper.GetSampleOutput() };
+            args = new string[] { "angular", "https://bo-legal-server-test-legal-person.apps.lab.notary.ir/swagger/v1/swagger.json", SampleHelper.GetSampleOutput() };
             Logger.LogInfo("DEBUG Mode");
 #endif
 
