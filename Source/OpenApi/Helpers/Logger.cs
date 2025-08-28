@@ -10,11 +10,11 @@ namespace OpenApi.Helpers
         }
         public static void LogInfo(string log)
         {
-            Log(log, ConsoleColor.DarkCyan);
+            Log("[Info] " + log, ConsoleColor.DarkCyan);
         }
         public static void LogError(string log)
         {
-            Log(log, ConsoleColor.Red);
+            Log("[ERROR] " + log, ConsoleColor.Red);
         }
         public static void Log(string log, ConsoleColor color)
         {

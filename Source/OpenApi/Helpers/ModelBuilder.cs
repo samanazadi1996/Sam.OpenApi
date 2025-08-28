@@ -18,7 +18,7 @@ namespace OpenApi.Helpers
 
                 if (!response.IsSuccessStatusCode)
                 {
-                    Logger.LogError($"[ERROR] Request failed. Status Code: {(int)response.StatusCode} - {response.ReasonPhrase}");
+                    Logger.LogError($"Request failed. Status Code: {(int)response.StatusCode} - {response.ReasonPhrase}");
                     return null;
                 }
 
@@ -26,7 +26,7 @@ namespace OpenApi.Helpers
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
-                    Logger.LogError("[ERROR] Response content is empty.");
+                    Logger.LogError("Response content is empty.");
                     return null;
                 }
 
@@ -34,19 +34,19 @@ namespace OpenApi.Helpers
             }
             catch (HttpRequestException ex)
             {
-                Logger.LogError($"[ERROR] HTTP request error: {ex.Message}");
+                Logger.LogError($"HTTP request error: {ex.Message}");
                 Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (TaskCanceledException ex)
             {
-                Logger.LogError($"[ERROR] Request timed out: {ex.Message}");
+                Logger.LogError($"Request timed out: {ex.Message}");
                 Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (Exception ex)
             {
-                Logger.LogError($"[ERROR] Unexpected error: {ex.Message}");
+                Logger.LogError($"Unexpected error: {ex.Message}");
                 Logger.LogError(ex.StackTrace);
                 return null;
             }
@@ -58,13 +58,13 @@ namespace OpenApi.Helpers
             {
                 if (string.IsNullOrWhiteSpace(filePath))
                 {
-                    Logger.LogError("[ERROR] File path is null or empty.");
+                    Logger.LogError("File path is null or empty.");
                     return null;
                 }
 
                 if (!File.Exists(filePath))
                 {
-                    Logger.LogError($"[ERROR] File not found: {filePath}");
+                    Logger.LogError($"File not found: {filePath}");
                     return null;
                 }
 
@@ -72,7 +72,7 @@ namespace OpenApi.Helpers
 
                 if (string.IsNullOrWhiteSpace(content))
                 {
-                    Logger.LogError($"[ERROR] File is empty: {filePath}");
+                    Logger.LogError($"File is empty: {filePath}");
                     return null;
                 }
 
@@ -80,19 +80,19 @@ namespace OpenApi.Helpers
             }
             catch (IOException ex)
             {
-                Logger.LogError($"[ERROR] File read error: {ex.Message}");
+                Logger.LogError($"File read error: {ex.Message}");
                 Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (UnauthorizedAccessException ex)
             {
-                Logger.LogError($"[ERROR] Access denied to file: {filePath}");
+                Logger.LogError($"Access denied to file: {filePath}");
                 Logger.LogError(ex.StackTrace);
                 return null;
             }
             catch (Exception ex)
             {
-                Logger.LogError($"[ERROR] Unexpected error: {ex.Message}");
+                Logger.LogError($"Unexpected error: {ex.Message}");
                 Logger.LogError(ex.StackTrace);
                 return null;
             }

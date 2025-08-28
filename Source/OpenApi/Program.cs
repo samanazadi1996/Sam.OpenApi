@@ -37,12 +37,12 @@ namespace OpenApi
             }
             else
             {
-                Logger.LogError("[ERROR] The second argument must be either a valid URL or an existing file path.");
+                Logger.LogError("The second argument must be either a valid URL or an existing file path.");
                 return;
             }
             if (rootobject is null)
             {
-                Logger.LogError("[ERROR] Failed to parse OpenAPI specification. The input may be invalid or empty.");
+                Logger.LogError("Failed to parse OpenAPI specification. The input may be invalid or empty.");
                 return;
             }
 
