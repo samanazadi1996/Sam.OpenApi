@@ -248,14 +248,19 @@ namespace OpenApi.SourceBuilders
                 if (value.TryGetProperty("$ref", out var tmp))
                 {
                     var className = RefToName(tmp.ToString());
+
+                    if (className.Contains("<")) // generic
+                        return className;
+
                     Imports.Add(
                         TemplateReader.Angular.Any("import")
                         .Replace("ClassName", className)
                         .Replace("FileName", className.ToKebabCase())
-                        );
+                    );
 
                     return className;
                 }
+
                 if (value.TryGetProperty("type", out var tmp2) && tmp2.ToString() == "object")
                 {
                     return "any";
@@ -273,8 +278,6 @@ namespace OpenApi.SourceBuilders
                 }
 
                 return "any";
-
-
             }
 
 
@@ -311,10 +314,23 @@ namespace OpenApi.SourceBuilders
 
         private static string CleanName(string name)
         {
-            // حذف generic ها مثل `1[...]`
+            // حذف generic ها مثل PagedResult`1[Product]
             int backtickIndex = name.IndexOf('`');
             if (backtickIndex > 0)
                 name = name.Substring(0, backtickIndex);
+
+            // اگر generic بود (مثلاً PagedResult[Product])
+            if (name.Contains("[") && name.Contains("]"))
+            {
+                var baseName = name.Substring(0, name.IndexOf("["));
+                var inner = name.Substring(name.IndexOf("[") + 1, name.LastIndexOf("]") - name.IndexOf("[") - 1);
+
+                var innerTypes = inner.Split(',')
+                    .Select(t => CleanName(t)) // recursive
+                    .ToList();
+
+                return $"{baseName}<{string.Join(", ", innerTypes)}>";
+            }
 
             // حذف کاراکترهای اضافی
             name = name
@@ -326,7 +342,6 @@ namespace OpenApi.SourceBuilders
                 .Replace("`", "")
                 .Trim();
 
-            // فقط آخرین بخش namespace
             if (name.Contains("-"))
             {
                 var parts = name.Split(new[] { '-' }, StringSplitOptions.RemoveEmptyEntries);
